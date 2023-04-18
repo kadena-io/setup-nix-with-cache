@@ -4,4 +4,4 @@ GitHub action for setting up a simple Nix environment that caches to a custom Ni
 
 ## Usage
 
-Please check [.github/workflows/test.yml] for an example using an AWS S3 bucket as a Nix cache.
+Please check [.github/workflows/test.yml](.github/workflows/test.yml) for an example using an AWS S3 bucket as a Nix cache.
