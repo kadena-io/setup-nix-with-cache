@@ -1,0 +1,1 @@
+GitHub action for setting up a simple Nix environment with caching
