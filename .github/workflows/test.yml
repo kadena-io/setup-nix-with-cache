@@ -35,5 +35,5 @@ jobs:
 
     - name: Attempt to fetch an existing cache entry
       run: |
-        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" "echo Example > $out"'
+        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" {} "echo Example > $out"'
 
