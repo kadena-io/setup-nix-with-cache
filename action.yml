@@ -34,6 +34,7 @@ runs:
         nix copy --to "${{ inputs.cache_url }}" $$OUT_PATHS
         EOF
 
+        sudo mkdir -p /etc/nix/
         sudo tee /etc/nix/nix.conf <<EOF
         substituters = https://cache.nixos.org/ ${{ inputs.cache_url }}
         trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
