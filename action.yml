@@ -30,8 +30,8 @@ runs:
         set -euo pipefail
         set -f # disable globbing
         export IFS=' '
-        echo "Uploading paths" $$OUT_PATHS
-        nix copy --to "${{ inputs.cache_url }}" $$OUT_PATHS
+        echo "Uploading paths" \$OUT_PATHS
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
 
