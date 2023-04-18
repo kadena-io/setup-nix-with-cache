@@ -1,0 +1,50 @@
+name: 'Set up Nix environment with caching'
+description: -|
+  This action installs Nix in single-user mode and configures it to
+  use a custom cache
+inputs:
+  cache_url:
+    description: 'URL for the Nix cache'
+    required: true
+  signing_private_key:
+    description: The private (secret) key used for signing Nix store paths
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Install Nix
+      uses: nixbuild/nix-quick-install-action@v22
+
+    - run: nix-build --version
+      shell: bash
+
+    - name: Populate the nix.conf with cache fields
+      shell: bash
+      run: |
+        TMP_DIR=$(mktemp -d)
+        echo "${{ inputs.private_key }}" > "$TMP_DIR/key.private"
+
+        tee $TMP_DIR/post-build-hook.sh <<EOF
+        #!/usr/bin/env bash
+
+        set -euo pipefail
+        set -f # disable globbing
+        export IFS=' '
+        echo "Uploading paths" $$OUT_PATHS
+        nix copy --to "${{ inputs.cache_url }}" $$OUT_PATHS
+        EOF
+
+        sudo tee /etc/nix/nix.conf <<EOF
+        substituters = https://cache.nixos.org/ ${{ inputs.cache_url }}
+        trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+        secret-key-files = $TMP_DIR/key.private
+        post-build-hook = $TMP_DIR/post-build-hook.sh
+        experimental-features = nix-command fetch-closure flakes
+        EOF
+
+
+
+
+
+
+

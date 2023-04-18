@@ -1,0 +1,36 @@
+name: Test the GitHub action of this repository
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-build-and-cache:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Run this repo's action
+      uses: ./
+      with:
+        cache_url: s3://nodemon-nix-cache?region=us-east-1
+        signing_private_key: ${{ secrets.NIX_CACHE_PRIVATE_KEY }}
+
+    - name: Attempt to build a new derivation with Nix
+      run: |
+        nix-build -E '(import <nixpkgs> {}).writeText "build-example" (builtins.toString builtins.currentTime)'
+
+    - name: Attempt to fetch an existing cache entry
+      run: |
+        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" "echo Example > $out"'
+
