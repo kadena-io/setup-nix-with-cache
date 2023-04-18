@@ -26,6 +26,9 @@ jobs:
         cache_url: s3://nodemon-nix-cache?region=us-east-1
         signing_private_key: ${{ secrets.NIX_CACHE_PRIVATE_KEY }}
 
+    - name: Set up Nix path
+      run: echo "NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.11.tar.gz" >> $GITHUB_ENV
+
     - name: Attempt to build a new derivation with Nix
       run: |
         nix-build -E '(import <nixpkgs> {}).writeText "build-example" (builtins.toString builtins.currentTime)'
