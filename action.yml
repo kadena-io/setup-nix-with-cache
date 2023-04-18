@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         TMP_DIR=$(mktemp -d)
-        echo "${{ inputs.private_key }}" > "$TMP_DIR/key.private"
+        echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
