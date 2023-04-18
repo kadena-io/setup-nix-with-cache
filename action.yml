@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         TMP_DIR=$(mktemp -d)
-        echo "${{ inputs.private_key }}" > "$TMP_DIR/key.private"
+        echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
@@ -30,10 +30,12 @@ runs:
         set -euo pipefail
         set -f # disable globbing
         export IFS=' '
-        echo "Uploading paths" $$OUT_PATHS
-        nix copy --to "${{ inputs.cache_url }}" $$OUT_PATHS
+        echo "Uploading paths" \$OUT_PATHS
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
         EOF
+        chmod a+x $TMP_DIR/post-build-hook.sh
 
+        sudo mkdir -p /etc/nix/
         sudo tee /etc/nix/nix.conf <<EOF
         substituters = https://cache.nixos.org/ ${{ inputs.cache_url }}
         trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=

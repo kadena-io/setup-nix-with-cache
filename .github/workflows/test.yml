@@ -8,7 +8,10 @@ on:
 
 jobs:
   test-build-and-cache:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -21,10 +24,16 @@ jobs:
         aws-region: us-east-1
 
     - name: Run this repo's action
+      # For an external repo wishing to use this action, the uses field needs to be:
+      # uses: kadena-io/setup-nix-with-cache@{The version you want to use}
       uses: ./
       with:
         cache_url: s3://nodemon-nix-cache?region=us-east-1
         signing_private_key: ${{ secrets.NIX_CACHE_PRIVATE_KEY }}
+
+    # This step is probably not needed for external repos that use this action
+    - name: Set up Nix path
+      run: echo "NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.11.tar.gz" >> $GITHUB_ENV
 
     - name: Attempt to build a new derivation with Nix
       run: |
@@ -32,5 +41,5 @@ jobs:
 
     - name: Attempt to fetch an existing cache entry
       run: |
-        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" "echo Example > $out"'
+        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" {} "echo Example > $out"'
 
