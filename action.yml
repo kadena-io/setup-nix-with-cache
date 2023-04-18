@@ -33,6 +33,7 @@ runs:
         echo "Uploading paths" $$OUT_PATHS
         nix copy --to "${{ inputs.cache_url }}" $$OUT_PATHS
         EOF
+        chmod a+x $TMP_DIR/post-build-hook.sh
 
         sudo mkdir -p /etc/nix/
         sudo tee /etc/nix/nix.conf <<EOF
