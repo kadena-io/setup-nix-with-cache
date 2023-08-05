@@ -13,7 +13,7 @@ runs:
   using: composite
   steps:
     - name: Install Nix
-      uses: devopsgoth/nix-quick-install-action@master
+      uses: devopsgoth/nix-quick-install-action@v27
 
     - run: nix-build --version
       shell: bash
