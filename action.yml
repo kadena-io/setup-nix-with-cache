@@ -14,7 +14,7 @@ runs:
   steps:
     - name: Install Nix
       if: ${{ ! contains(runner.arch,'ARM') }}
-      uses: nixbuild/nix-quick-install-action@v25
+      uses: nixbuild/nix-quick-install-action@v22
 
     - run: nix-build --version
       shell: bash
