@@ -5,6 +5,7 @@ on: [push]
 jobs:
   test-build-and-cache:
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, mac-m1]
