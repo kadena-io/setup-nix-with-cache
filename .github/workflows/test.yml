@@ -6,7 +6,7 @@ jobs:
   test-build-and-cache:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fase: false
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, mac-m1]
     steps:
