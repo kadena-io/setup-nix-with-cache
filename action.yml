@@ -13,9 +13,12 @@ runs:
   using: composite
   steps:
     - name: Install Nix
-      uses: devopsgoth/nix-quick-install-action@master
+      if: ${{ ! contains(runner.arch,'ARM') }}
+      uses: nixbuild/nix-quick-install-action@v22
 
-    - run: nix-build --version
+    - run: |
+        echo $PATH
+        nix-build --version
       shell: bash
 
     - name: Populate the nix.conf with cache fields
