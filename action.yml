@@ -27,7 +27,7 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
-        $TMP_DIR/upload-paths.sh <<EOF
+        tee $TMP_DIR/upload-paths.sh <<EOF
           read -r OUT_PATHS
           export IFS=' '
           echo Uploading paths \$OUT_PATHS 1>&2
