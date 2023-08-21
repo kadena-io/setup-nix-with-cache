@@ -38,7 +38,7 @@ runs:
         ( nix-shell -p socat --command "socat -ddd TCP4-LISTEN:54321,fork EXEC:$TMP_DIR/upload-paths.sh" & ) &
 
         echo waiting for socat to start
-        sleep 1
+        sleep 20
 
         netstat -tuln | grep 54321
 
