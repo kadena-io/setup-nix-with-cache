@@ -47,9 +47,10 @@ runs:
         experimental-features = nix-command fetch-closure flakes
         EOF
 
-
-
-
-
-
+    - name: Restart the Nix daemon on MacOS
+      shell: bash
+      if: ${{ runner.os == 'macOS' }}
+      run: |
+        sudo launchctl stop org.nixos.nix-daemon;
+        sudo launchctl start org.nixos.nix-daemon;
 
