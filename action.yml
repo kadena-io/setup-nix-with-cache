@@ -28,14 +28,14 @@ runs:
         echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
         tee $TMP_DIR/upload-paths.sh <<EOF
-          read -r OUT_PATHS
-          export IFS=' '
-          echo Uploading paths \$OUT_PATHS 1>&2
-          nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
+        read -r OUT_PATHS
+        export IFS=' '
+        echo Uploading paths \$OUT_PATHS 1>&2
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
-        (nix-shell -p socat --command "socat TCP4-LISTEN:54321,fork EXEC:$TMP_DIR/upload-paths.sh" &) &
+        ( nix-shell -p socat --command "socat TCP4-LISTEN:54321,fork EXEC:$TMP_DIR/upload-paths.sh" & ) &
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
