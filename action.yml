@@ -27,8 +27,14 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
+        env > $TMP_DIR/env-vars.txt
+
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
+
+        # Restore the environment variables
+        source $TMP_DIR/env-vars.txt
+
 
         set -euo pipefail
         set -f # disable globbing
