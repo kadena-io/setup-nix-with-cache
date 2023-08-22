@@ -32,7 +32,7 @@ runs:
         read -r OUT_PATHS
         export IFS=' '
         echo Uploading paths \$OUT_PATHS 1>&2
-        echo nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
@@ -42,7 +42,7 @@ runs:
 
         sleep 3
 
-        echo "Some_Path" | nc localhost 54321
+        echo $(nix-build '<nixpkgs>' -A nmap) | nc localhost 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
