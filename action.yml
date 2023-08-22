@@ -39,6 +39,8 @@ runs:
 
         $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
+        sleep 3
+
         echo "Some_Path" | nc localhost 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
