@@ -28,6 +28,7 @@ runs:
         echo "${{ inputs.signing_private_key }}" > "$TMP_DIR/key.private"
 
         tee $TMP_DIR/upload-paths.sh <<EOF
+        #!/usr/bin/env bash
         read -r OUT_PATHS
         export IFS=' '
         echo Uploading paths \$OUT_PATHS 1>&2
