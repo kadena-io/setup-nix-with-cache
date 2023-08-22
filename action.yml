@@ -65,7 +65,11 @@ runs:
 
         echo Copy aws credentials to /var/root/.aws
         sudo mkdir -p /var/root/.aws
-        sudo cp -r ~/.aws/* /var/root/.aws
+        sudo cat <<EOF > /var/root/.aws/credentials
+        [default]
+        aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        EOF
 
     - name: Restart the Nix daemon on MacOS
       shell: bash
