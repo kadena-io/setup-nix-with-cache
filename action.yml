@@ -31,7 +31,7 @@ runs:
         read -r OUT_PATHS
         export IFS=' '
         echo Uploading paths \$OUT_PATHS 1>&2
-        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
+        echo nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
@@ -39,9 +39,7 @@ runs:
 
         $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
-        echo Check that the port is open
-        sleep 5
-        netstat -tuln | grep 54321
+        echo "Some_Path" | nc localhost 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
