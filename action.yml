@@ -36,13 +36,11 @@ runs:
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
-        NCAT=$(nix-build '<nixpkgs>' -A nmap)/bin/ncat
+        # NCAT=$(nix-build '<nixpkgs>' -A nmap)/bin/ncat
+        # $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
-        $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
-
-        sleep 3
-
-        echo $(nix-build '<nixpkgs>' -A nmap) | nc localhost 54321
+        # sleep 3
+        # echo $(nix-build '<nixpkgs>' -A nmap) | nc localhost 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
@@ -50,7 +48,8 @@ runs:
         set -euo pipefail
         set -f # disable globbing
         echo "Built paths:" \$OUT_PATHS
-        echo \$OUT_PATHS | nc localhost 54321
+        # echo \$OUT_PATHS | nc localhost 54321
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS 2>&1
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
 
