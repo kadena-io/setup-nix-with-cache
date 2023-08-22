@@ -31,8 +31,8 @@ runs:
         #!/usr/bin/env bash
         read -r OUT_PATHS
         export IFS=' '
-        echo Uploading paths \$OUT_PATHS 1>&2
-        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS
+        echo Uploading paths \$OUT_PATHS
+        nix copy --to "${{ inputs.cache_url }}" \$OUT_PATHS 2>&1
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
