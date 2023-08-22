@@ -65,7 +65,7 @@ runs:
 
         echo Copy aws credentials to /var/root/.aws
         sudo mkdir -p /var/root/.aws
-        sudo cat <<EOF > /var/root/.aws/credentials
+        sudo sh -c 'cat - > /var/root/.aws/credentials' <<EOF
         [default]
         aws_access_key_id = $AWS_ACCESS_KEY_ID
         aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
