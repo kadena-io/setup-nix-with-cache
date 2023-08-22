@@ -35,11 +35,11 @@ runs:
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
-        ( nix-shell -p socat --command "socat -ddd TCP4-LISTEN:54321,fork EXEC:$TMP_DIR/upload-paths.sh" & ) &
+        NCAT=$(nix-build '<nixpkgs>' -A nmap)/bin/ncat
 
-        echo waiting for socat to start
-        sleep 20
+        $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
+        echo Check that the port is open
         netstat -tuln | grep 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
