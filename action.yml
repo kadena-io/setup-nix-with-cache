@@ -40,6 +40,7 @@ runs:
         $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
         echo Check that the port is open
+        sleep 5
         netstat -tuln | grep 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
