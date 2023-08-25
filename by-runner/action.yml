@@ -81,11 +81,13 @@ runs:
       shell: bash
       if: ${{ runner.os == 'macOS' }}
       run: |
-        sudo launchctl stop org.nixos.nix-daemon;
-        sudo launchctl start org.nixos.nix-daemon;
+        sudo launchctl stop org.nixos.nix-daemon
+        sudo launchctl start org.nixos.nix-daemon
+        sleep 1
 
     - name: Restart the Nix daemon on Linux
       shell: bash
       if: ${{ runner.os == 'Linux' }}
       run: |
         sudo systemctl restart nix-daemon.service
+        sleep 1
