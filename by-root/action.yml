@@ -18,6 +18,8 @@ runs:
   steps:
     - name: Install Nix
       uses: cachix/install-nix-action@v22
+      with:
+        nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz
 
     - name: Set NIX_PATH
       run: |
@@ -44,8 +46,6 @@ runs:
         $(which nix) copy --to "${{ inputs.cache_url }}" \$OUT_PATHS 2>&1
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
-
-        nix-build '<nixpkgs>' -A hello --no-out-link
 
         CERTFILEOPT=$( [[ "$OSTYPE" =~ darwin ]] && echo "ssl-cert-file = /etc/ssl/cert.pem" || echo "" )
 
