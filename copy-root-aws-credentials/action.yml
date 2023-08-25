@@ -7,11 +7,20 @@ description: -|
 runs:
   using: composite
   steps:
+    - name: Determine AWS root path
+      id: aws-root-path
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "macOS" ]]; then
+          echo "::set-output name=path::/var/root/.aws"
+        else
+          echo "::set-output name=path::/root/.aws"
+        fi
+
     - name: Copy aws credentials to root and clean up at the end
       uses: pyTooling/Actions/with-post-step@v0.4.5
       env:
-        AWS_ROOT_PATH: |
-          ${{ runner.os == 'macOS' ? '/var/root/.aws' : '/root/.aws' }}
+        AWS_ROOT_PATH: ${{ steps.aws-root-path.outputs.path }}
       with:
         main: |
           echo Copy aws credentials to $AWS_ROOT_PATH
