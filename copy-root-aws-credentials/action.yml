@@ -12,9 +12,9 @@ runs:
       shell: bash
       run: |
         if [[ "${{ runner.os }}" == "macOS" ]]; then
-          echo "::set-output name=path::/var/root/.aws"
+          echo "path=/var/root/.aws" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=path::/root/.aws"
+          echo "path=/root/.aws" >> $GITHUB_OUTPUT
         fi
 
     - name: Copy aws credentials to root and clean up at the end
