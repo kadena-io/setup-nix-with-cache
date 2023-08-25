@@ -41,7 +41,6 @@ runs:
         set -euo pipefail
         set -f # disable globbing
         echo "Built paths:" \$OUT_PATHS
-        # echo \$OUT_PATHS | nc localhost 54321
         $(which nix) copy --to "${{ inputs.cache_url }}" \$OUT_PATHS 2>&1
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
