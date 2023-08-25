@@ -1,3 +1,5 @@
+*NOTE*: The actions in this repository are meant to be used with Kadena's own github actions infrastructure, therefore they contain Kadena-specific logic. They may still be useful for external users out of the box or after some tweaks, but that's not officially supported by Kadena.
+
 # Set up Nix along with caching
 
 A set of GitHub actions for setting up a multi-user Nix environment with a binary cache for uploading and fetching derivation outputs.
