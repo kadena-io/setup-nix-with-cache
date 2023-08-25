@@ -25,7 +25,7 @@ runs:
     - name: Set NIX_PATH
       if: ${{ runner.name == 'mac-m1' }}
       run: |
-        echo "export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz" >> $GITHUB_ENV
+        echo "NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz" >> $GITHUB_ENV
       shell: bash
 
     - run: |
