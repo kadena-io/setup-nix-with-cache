@@ -25,7 +25,7 @@ runs:
         main: |
           echo Copy aws credentials to $AWS_ROOT_PATH
           sudo mkdir -p $AWS_ROOT_PATH
-          sudo sh -c 'cat - > $AWS_ROOT_PATH/credentials' <<EOF
+          sudo sh -c "cat - > $AWS_ROOT_PATH/credentials" <<EOF
           [default]
           aws_access_key_id = $AWS_ACCESS_KEY_ID
           aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
