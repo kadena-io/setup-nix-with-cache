@@ -45,6 +45,8 @@ runs:
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
 
+        nix-build '<nixpkgs>' -A hello --no-out-link
+
         CERTFILEOPT=$( [[ "$OSTYPE" =~ darwin ]] && echo "ssl-cert-file = /etc/ssl/cert.pem" || echo "" )
 
         sudo mkdir -p /etc/nix/
