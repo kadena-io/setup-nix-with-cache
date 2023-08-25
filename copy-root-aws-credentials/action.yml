@@ -1,0 +1,25 @@
+name: 'Copy the AWS credentials to the root user'
+description: -|
+  This action copies the AWS credentials from the runner user to
+  the root user. This is meant to be used for actions where the
+  Nix daemon needs to read from or write to a binary cache that
+  requires authentication.
+runs:
+  using: composite
+  steps:
+    - name: Copy aws credentials to root and clean up at the end
+      uses: pyTooling/Actions/with-post-step@v0.4.5
+      env:
+        AWS_ROOT_PATH: |
+          ${{ runner.os == 'macOS' ? '/var/root/.aws' : '/root/.aws' }}
+      with:
+        main: |
+          echo Copy aws credentials to $AWS_ROOT_PATH
+          sudo mkdir -p $AWS_ROOT_PATH
+          sudo sh -c 'cat - > $AWS_ROOT_PATH/credentials' <<EOF
+          [default]
+          aws_access_key_id = $AWS_ACCESS_KEY_ID
+          aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
+          EOF
+        post: |
+          sudo rm -rf $AWS_ROOT_PATH

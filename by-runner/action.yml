@@ -1,7 +1,11 @@
-name: 'Set up Nix environment with caching'
+name: 'Set up Nix environment with cache uploads by the runner'
 description: -|
-  This action installs Nix in single-user mode and configures it to
-  use a custom cache
+  This action installs Nix in multi-user mode and configures it to
+  use a custom cache. It also uploads all the build results to the cache,
+  including intermediate packages built as part of a build activity.
+  The cache uploads are performed by the runner user in the post-build-hook,
+  this means that the runner user needs to have the proper credentials
+  configured to have write access to the cache.
 inputs:
   cache_url:
     description: 'URL for the Nix cache'
@@ -13,8 +17,10 @@ runs:
   using: composite
   steps:
     - name: Install Nix
-      if: ${{ ! contains(runner.arch,'ARM') }}
-      uses: nixbuild/nix-quick-install-action@v22
+      if: ${{ ! runner.name == 'mac-m1' }}
+      uses: cachix/install-nix-action@v22
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
 
     - run: |
         echo $PATH
@@ -36,11 +42,11 @@ runs:
         EOF
         chmod a+x $TMP_DIR/upload-paths.sh
 
-        # NCAT=$(nix-build '<nixpkgs>' -A nmap)/bin/ncat
-        # $NCAT -k -l 54321 -e $TMP_DIR/upload-paths.sh &
+        NMAP=$(nix-build '<nixpkgs>' -A nmap --no-out-link)
+        $NMAP/bin/ncat -k -l 54321 -e $TMP_DIR/upload-paths.sh &
 
-        # sleep 3
-        # echo $(nix-build '<nixpkgs>' -A nmap) | nc localhost 54321
+        sleep 1
+        echo $NMAP | nc localhost 54321
 
         tee $TMP_DIR/post-build-hook.sh <<EOF
         #!/usr/bin/env bash
@@ -48,8 +54,7 @@ runs:
         set -euo pipefail
         set -f # disable globbing
         echo "Built paths:" \$OUT_PATHS
-        # echo \$OUT_PATHS | nc localhost 54321
-        $(which nix) copy --to "${{ inputs.cache_url }}" \$OUT_PATHS 2>&1
+        echo \$OUT_PATHS | nc localhost 54321
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
 
@@ -62,14 +67,6 @@ runs:
         experimental-features = nix-command fetch-closure flakes
         EOF
 
-        echo Copy aws credentials to /var/root/.aws
-        sudo mkdir -p /var/root/.aws
-        sudo sh -c 'cat - > /var/root/.aws/credentials' <<EOF
-        [default]
-        aws_access_key_id = $AWS_ACCESS_KEY_ID
-        aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
-        EOF
-
     - name: Restart the Nix daemon on MacOS
       shell: bash
       if: ${{ runner.os == 'macOS' }}
@@ -77,3 +74,8 @@ runs:
         sudo launchctl stop org.nixos.nix-daemon;
         sudo launchctl start org.nixos.nix-daemon;
 
+    - name: Restart the Nix daemon on Linux
+      shell: bash
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        sudo systemctl restart nix-daemon.service
