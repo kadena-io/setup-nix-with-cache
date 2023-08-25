@@ -46,8 +46,14 @@ runs:
         EOF
         chmod a+x $TMP_DIR/post-build-hook.sh
 
+        CERTFILEOPT=$( [[ "$OSTYPE" =~ darwin ]] && echo "ssl-cert-file = /etc/ssl/cert.pem" || echo "" )
+
         sudo mkdir -p /etc/nix/
         sudo tee /etc/nix/nix.conf <<EOF
+        show-trace = true
+        max-jobs = auto
+        $CERTFILEOPT
+        trusted-users = root ${USER:-}
         substituters = ${{ inputs.cache_url }} https://cache.nixos.org/
         trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
         secret-key-files = $TMP_DIR/key.private
