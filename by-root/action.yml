@@ -58,6 +58,7 @@ runs:
         substituters = ${{ inputs.cache_url }} https://cache.nixos.org/
         trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
         secret-key-files = $TMP_DIR/key.private
+        post-build-hook = $TMP_DIR/post-build-hook.sh
         experimental-features = nix-command fetch-closure flakes
         EOF
 
