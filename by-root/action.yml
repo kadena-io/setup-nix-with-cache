@@ -13,6 +13,23 @@ inputs:
   signing_private_key:
     description: The private (secret) key used for signing Nix store paths
     required: true
+  additional_experimental_features:
+    description: 'Additional experimental features to enable in nix.conf'
+    required: false
+    default: ''
+  additional_substituters:
+    description: 'Additional substituters to add in nix.conf'
+    required: false
+    default: ''
+  additional_trusted_public_keys:
+    description: 'Additional trusted public keys to add in nix.conf'
+    required: false
+    default: ''
+  extra_nix_conf_entries:
+    description: 'Other key=value entries to add to nix.conf'
+    required: false
+    default: ''
+
 runs:
   using: composite
   steps:
@@ -31,7 +48,7 @@ runs:
         nix-build --version
       shell: bash
 
-    - name: Populate the nix.conf with cache fields
+    - name: Populate the nix.conf with cache fields and optional settings
       shell: bash
       run: |
         TMP_DIR=$(mktemp -d)
@@ -55,11 +72,12 @@ runs:
         max-jobs = auto
         $CERTFILEOPT
         trusted-users = root ${USER:-}
-        substituters = ${{ inputs.cache_url }} https://cache.nixos.org/
-        trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+        substituters = ${{ inputs.cache_url }} https://cache.nixos.org/ ${{ inputs.additional_substituters }}
+        trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ${{ inputs.additional_trusted_public_keys }}
         secret-key-files = $TMP_DIR/key.private
         post-build-hook = $TMP_DIR/post-build-hook.sh
-        experimental-features = nix-command fetch-closure flakes
+        experimental-features = nix-command flakes ${{ inputs.additional_experimental_features }}
+        ${{ inputs.extra_nix_conf_entries }}
         EOF
 
     - name: Restart the Nix daemon on MacOS
