@@ -6,6 +6,7 @@ in {
     {
       buildInputs = [ pkgs.nix ];
       requiredSystemFeatures = [ "recursive-nix" ];
+      NIX_PATH = "nixpkgs=${pkgs.path}";
     }
     ''
       mkdir $out
