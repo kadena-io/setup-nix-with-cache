@@ -38,6 +38,11 @@ runs:
       with:
         nix_path: nixpkgs=https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz
 
+    - name: Upgrade Nix
+      run: |
+        sudo -i nix upgrade-nix
+      shell: bash
+
     - name: Set NIX_PATH
       run: |
         echo "NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz" >> $GITHUB_ENV
