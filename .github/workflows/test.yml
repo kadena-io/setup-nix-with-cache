@@ -26,16 +26,21 @@ jobs:
       with:
         cache_url: s3://nodemon-nix-cache?region=us-east-1
         signing_private_key: ${{ secrets.NIX_CACHE_PRIVATE_KEY }}
+        additional_experimental_features: recursive-nix
 
     - uses: ./copy-root-aws-credentials
 
     - name: Attempt to build a new derivation with Nix
       run: |
-        nix-build -E '(import <nixpkgs> {}).writeText "build-example" (builtins.toString builtins.currentTime)'
+        nix-build .github/workflows/test.nix -A alwaysNewDerivation
 
     - name: Attempt to fetch an existing cache entry
       run: |
-        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" {} "echo Example > $out"'
+        nix-build .github/workflows/test.nix -A constantDerivation
+
+    - name: Test the recursive-nix additional_experimental_features flag
+      run: |
+        nix-build .github/workflows/test.nix -A recursiveNixDerivation
 
   test-build-and-cache-by-runner:
     runs-on: ${{ matrix.os }}
@@ -58,13 +63,18 @@ jobs:
       with:
         cache_url: s3://nodemon-nix-cache?region=us-east-1
         signing_private_key: ${{ secrets.NIX_CACHE_PRIVATE_KEY }}
+        additional_experimental_features: recursive-nix
 
     - uses: ./copy-root-aws-credentials
 
     - name: Attempt to build a new derivation with Nix
       run: |
-        nix-build -E '(import <nixpkgs> {}).writeText "build-example" (builtins.toString builtins.currentTime)'
+        nix-build .github/workflows/test.nix -A alwaysNewDerivation
 
     - name: Attempt to fetch an existing cache entry
       run: |
-        nix-build -E '(import <nixpkgs> {}).runCommand "fetch-example" {} "echo Example > $out"'
+        nix-build .github/workflows/test.nix -A constantDerivation
+
+    - name: Test the recursive-nix additional_experimental_features flag
+      run: |
+        nix-build .github/workflows/test.nix -A recursiveNixDerivation
