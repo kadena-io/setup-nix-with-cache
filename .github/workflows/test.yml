@@ -17,7 +17,7 @@ jobs:
       run: |
         env
         ldd $(which nix)
-        unset $LD_LIBRARY_PATH
+        unset LD_LIBRARY_PATH
         
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
