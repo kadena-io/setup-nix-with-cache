@@ -12,8 +12,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
     - name: Get Env
-      run: env
+      run: |
+        env
+        ldd $(which nix)
+        
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
