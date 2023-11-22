@@ -12,7 +12,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
     - name: Get Env
       run: |
         unset LD_LIBRARY_PATH
