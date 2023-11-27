@@ -11,15 +11,9 @@ jobs:
         os: [ubuntu-latest, macos-latest, macos-m1, aarch64-linux]
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Get Env
-      run: |
-        unset LD_LIBRARY_PATH
-        env
-        ldd $(which nix)        
+      uses: actions/checkout@v2 
     - name: Second get env
       run: |
-        env &&
         nix
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
