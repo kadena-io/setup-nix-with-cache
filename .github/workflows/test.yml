@@ -12,9 +12,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2 
-    - name: Second get env
-      run: |
-        nix
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
